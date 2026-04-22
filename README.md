@@ -10,7 +10,7 @@ This does that, but presents the results as a map plus card view instead of a pl
 
 ### Customer flow
 
-​`mermaid
+```mermaid
 flowchart TD
     A[User opens ChefPick] --> B{First visit?}
     B -->|Yes| C[Welcome overlay appears]
@@ -39,7 +39,7 @@ flowchart TD
     T --> N
     O -->|Remove saved item| U[Saved item is removed]
     U --> N
-​`
+```
 
 ### Repo layout
 
@@ -97,7 +97,7 @@ Lint runs locally: `cd frontend-jet && npm install && npm run lint`.
 
 ### Design choices
 
-​`mermaid
+```mermaid
 flowchart LR
     U[User browser] --> F[Frontend container<br/>Nginx serving Vite-built React app on :8080]
     F -->|/api/v1| B[Backend container<br/>FastAPI on :8000]
@@ -125,7 +125,7 @@ flowchart LR
     B1 --> P
     B2 --> P
     B3 --> P
-​`
+```
 
 The brief is small, so the goal was to hit it cleanly without inflating the project.
 
