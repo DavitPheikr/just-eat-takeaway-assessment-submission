@@ -70,17 +70,17 @@ The brief is small, so the goal was to hit it cleanly without inflating the proj
 
 **Split frontend and backend.** The frontend handles UI only. The backend owns the Just Eat call, caching, persistence, business rules, and the stable contract the frontend talks to. The point is that the frontend shouldn't know or care how upstream data is shaped or fetched, it just consumes a clean internal API.
 
-**Redis for postcode caching.** Same postcode searched twice within the cache window skips the upstream call. It's wired through the Docker setup and the backend service layer, so it's part of the design rather than a bolt-on, and it reflects how this would be built if it had to handle real traffic - which was the goal of implementing this feature, imitate and simulate real world solution and architecture.
+**Redis for postcode caching.** Same postcode searched twice within the cache window skips the upstream call. It's wired through the Docker setup and the backend service layer, so it's part of the design rather than a bolt-on, and it reflects how this would be built if it had to handle real traffic, which was the goal of implementing this feature, imitate and simulate real world solution and architecture.
 
 **Postgres as source of truth for saved data.** Saved restaurants are stored as a snapshot of the restaurant at the moment of save, not re-fetched from Just Eat afterwards. This is the most opinionated call in the project and it matters: the Saved tab stays consistent even if Just Eat's data shifts later, which keeps a user's notes and visited marks anchored to the restaurant they actually saved.
 
 ### Assumptions
 
-**"First 10 restaurants returned"** — taken literally. The backend returns the first 10 from the Just Eat response after filtering, without re-ranking.
+**"First 10 restaurants returned"**, taken literally. The backend returns the first 10 from the Just Eat response after filtering, without re-ranking.
 
 **Just Eat discovery is the only upstream source.** I didn't build separate endpoints for menus, checkout, contact details, or full restaurant pages. The scope is discovery plus the four required fields, plus the saved-restaurant features layered on top.
 
-**Interface format was open.** I built a mobile-first web app rather than a console or desktop list. Restaurants are a spatial problem, so a map-plus-card layout felt like the right shape.
+**Interface format was open.** I built a mobile-first web app rather than a console or desktop list. This fits the use case of such application better.
 
 **Persistence wasn't required.** Saved restaurants, visited state, and notes are extras, not part of the base requirement.
 
@@ -94,7 +94,7 @@ The save-as-snapshot decision has a real trade-off: saved cards can go stale if 
 
 ### What I'd do next
 
-Add end-to-end tests for the core journeys — search, save, visited toggle, note update. Unit coverage hits the pieces but not the flows.
+Add end-to-end tests for the core journeys: search, save, visited toggle, note update. Unit coverage hits the pieces but not the flows.
 
 Broaden frontend unit coverage beyond the API client, postcode entry page, and restaurant card.
 
@@ -102,7 +102,7 @@ Tighten the backend test docs. Commands work but the expected env isn't as expli
 
 Production-grade ops: stricter env validation, better healthchecks, deploy-specific config. I kept the setup focused on local reproducibility for the take-home.
 
-UI polish — spacing, motion, smaller interaction details. Functional but not finished.
+UI polish: spacing, motion, smaller interaction details. Functional but not finished.
 
 ### One note on the repo
 
