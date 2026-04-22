@@ -10,6 +10,14 @@ from app.db.models import Restaurant, SavedRestaurant
 from app.repositories.saved_restaurant_repository import SavedRestaurantRepository
 
 
+def _as_utc(value: datetime | None) -> datetime | None:
+    if value is None:
+        return None
+    if value.tzinfo is None:
+        return value.replace(tzinfo=UTC)
+    return value.astimezone(UTC)
+
+
 @pytest.fixture
 async def repository_session_factory():
     engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True)
@@ -125,6 +133,6 @@ async def test_saved_restaurant_repository_save_persists_updates(
     assert count == 1
     assert stored is not None
     assert stored.visited is True
-    assert stored.visited_at == visited_at
+    assert _as_utc(stored.visited_at) == visited_at
     assert stored.review_text == "Great pizza."
     assert stored.user_rating == 3
