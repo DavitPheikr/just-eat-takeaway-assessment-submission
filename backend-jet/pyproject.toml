@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chefpick-backend"
+version = "0.1.0"
+description = "ChefPick backend foundation"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.13,<2.0",
+    "asyncpg>=0.29,<1.0",
+    "fastapi>=0.111,<1.0",
+    "httpx>=0.27,<1.0",
+    "pydantic-settings>=2.2,<3.0",
+    "redis>=5.0,<6.0",
+    "sqlalchemy>=2.0,<3.0",
+    "uvicorn[standard]>=0.30,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "aiosqlite>=0.20,<1.0",
+    "pytest>=7.4,<9.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
