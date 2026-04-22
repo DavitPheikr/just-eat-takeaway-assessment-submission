@@ -8,6 +8,39 @@ Take a UK postcode, call the Just Eat API, filter to restaurant data, show the f
 
 This does that, but presents the results as a map plus card view instead of a plain list, and adds a Saved tab for keeping restaurants, marking them visited, and adding notes.
 
+### Customer flow
+
+​`mermaid
+flowchart TD
+    A[User opens ChefPick] --> B{First visit?}
+    B -->|Yes| C[Welcome overlay appears]
+    B -->|No| D[Postcode entry screen]
+    C --> D
+    D --> E[Enter UK postcode]
+    E --> F[Tap Go]
+    F --> G[Discovery results load]
+    G --> H[Browse restaurants on map and cards]
+    H --> I{Next action}
+    I -->|Tap map pin| J[Matching card scrolls into focus]
+    J --> H
+    I -->|Scroll cards| K[Focused restaurant changes]
+    K --> H
+    I -->|Tap save button| L[Saved state toggles]
+    L --> M[User switches to Saved tab]
+    M --> N[View saved restaurants]
+    N --> O{Next action}
+    O -->|Toggle visited| P[Visited state updates]
+    P --> N
+    O -->|Tap star rating<br/>visited only| Q[Rating updates inline]
+    Q --> N
+    O -->|Tap pencil button<br/>visited only| R[Review sheet opens]
+    R --> S[Edit note]
+    S --> T[Save note]
+    T --> N
+    O -->|Remove saved item| U[Saved item is removed]
+    U --> N
+​`
+
 ### Repo layout
 
 ```
@@ -63,6 +96,36 @@ docker compose --profile test run --rm frontend-test npx tsc --noEmit
 Lint runs locally: `cd frontend-jet && npm install && npm run lint`.
 
 ### Design choices
+
+​`mermaid
+flowchart LR
+    U[User browser] --> F[Frontend container<br/>Nginx serving Vite-built React app on :8080]
+    F -->|/api/v1| B[Backend container<br/>FastAPI on :8000]
+    B -->|read/write| P[(PostgreSQL)]
+    B -->|cache discovery results| R[(Redis)]
+    B -->|fetch restaurants by postcode| J[Just Eat public API]
+    subgraph Frontend
+        F1[Postcode entry screen]
+        F2[Discovery screen<br/>map + cards]
+        F3[Saved tab<br/>visited + rating + notes]
+        F --> F1
+        F --> F2
+        F --> F3
+    end
+    subgraph Backend
+        B1[Discovery routes + service]
+        B2[Saved routes + service]
+        B3[Repositories + data mapping]
+        B --> B1
+        B --> B2
+        B --> B3
+    end
+    B1 --> R
+    B1 --> J
+    B1 --> P
+    B2 --> P
+    B3 --> P
+​`
 
 The brief is small, so the goal was to hit it cleanly without inflating the project.
 
